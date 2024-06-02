@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">SafeDrive</string>
+    <string name="detection_safe">chlaa le gaari.</string>
+    <string name="detection_unsafe">Na chalaa gaari.</string>
+    <string name="detection_no_face">Muh to Dikha.</string>
+
+    <string name="in_vehicle">✅ Gaari mai hai tu. ✅</string>
+    <string name="out_vehicle">Gaari mai beth bsdk</string>
+
+    <string name="camera">Driving Mode</string>
+    <string name="info">Info</string>
+    <string name="settings">Settings</string>
+
+
+</resources>
