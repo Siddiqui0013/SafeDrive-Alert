@@ -30,6 +30,12 @@ import com.google.android.gms.common.internal.safeparcel.SafeParcelableSerialize
 import com.google.android.gms.location.ActivityRecognition
 import com.google.android.gms.location.ActivityRecognitionResult
 import com.google.android.gms.location.DetectedActivity
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationCallback
+import com.google.android.gms.location.LocationRequest
+import com.google.android.gms.location.LocationResult
+import com.google.android.gms.location.LocationServices
+import com.google.android.gms.location.Priority
 import com.google.mlkit.common.MlKitException
 import com.google.mlkit.vision.face.Face
 import com.google.mlkit.vision.face.FaceDetectorOptions
@@ -39,10 +45,10 @@ import com.siddiqui.safedrivealert.databinding.ActivityDetectionBinding
 import com.siddiqui.safedrivealert.ui.main.DetectionActivityViewModel
 import com.siddiqui.safedrivealert.ui.main.FaceDetectorProcessor
 
+
 class DetectionActivity : AppCompatActivity(), FaceDetectorProcessor.OnFaceDetectListener {
 
     companion object {
-        private const val TAG = "This App"
         private const val PERMISSION_REQUESTS = 1
         private const val PENDING_INTENT_REQUESTS = 2
         private const val TRANSITIONS_RECEIVER_ACTION =
@@ -51,7 +57,9 @@ class DetectionActivity : AppCompatActivity(), FaceDetectorProcessor.OnFaceDetec
 
         private val REQUIRED_RUNTIME_PERMISSIONS = arrayOf(
             Manifest.permission.CAMERA,
-            Manifest.permission.ACTIVITY_RECOGNITION
+            Manifest.permission.ACTIVITY_RECOGNITION,
+            Manifest.permission.ACCESS_FINE_LOCATION,
+            Manifest.permission.ACCESS_COARSE_LOCATION
         )
     }
 
@@ -68,16 +76,14 @@ class DetectionActivity : AppCompatActivity(), FaceDetectorProcessor.OnFaceDetec
     private val viewModel: DetectionActivityViewModel by viewModels()
 
     private lateinit var safeDriveMediaPlayer: MediaPlayer
-    private lateinit var safeDriveMediaPlayer1: MediaPlayer
     private lateinit var unsafeDriveMediaPlayer: MediaPlayer
-    private lateinit var unsafeDriveMediaPlayer1: MediaPlayer
     private lateinit var noFaceDetectedMediaPlayer: MediaPlayer
-    private lateinit var noFaceDetectedMediaPlayer1: MediaPlayer
 
 
     private val transitionBroadcastReceiver: TransitionsReceiver = TransitionsReceiver()
 
-
+    private lateinit var fusedLocationClient: FusedLocationProviderClient
+    private lateinit var locationCallback: LocationCallback
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -88,11 +94,8 @@ class DetectionActivity : AppCompatActivity(), FaceDetectorProcessor.OnFaceDetec
         }
 
         safeDriveMediaPlayer = MediaPlayer.create(this, R.raw.upward)
-        safeDriveMediaPlayer1 = MediaPlayer.create(this, R.raw.safe_speech)
         unsafeDriveMediaPlayer = MediaPlayer.create(this, R.raw.downward)
-        unsafeDriveMediaPlayer1 = MediaPlayer.create(this, R.raw.unsafe_speech)
         noFaceDetectedMediaPlayer = MediaPlayer.create(this, R.raw.error)
-        noFaceDetectedMediaPlayer1 = MediaPlayer.create(this, R.raw.noface_speech)
 
 
         binding = ActivityDetectionBinding.inflate(layoutInflater)
@@ -108,6 +111,7 @@ class DetectionActivity : AppCompatActivity(), FaceDetectorProcessor.OnFaceDetec
         }
 
         registerActivityRecognition()
+        setupLocationClient()
 
         binding.carMessage.setOnClickListener {
             val intent = Intent()
@@ -134,13 +138,16 @@ class DetectionActivity : AppCompatActivity(), FaceDetectorProcessor.OnFaceDetec
         super.onResume()
         bindPreviewUseCase()
         registerReceiver(transitionBroadcastReceiver, IntentFilter(TRANSITIONS_RECEIVER_ACTION))
+        startLocationUpdates()
     }
 
     override fun onPause() {
         super.onPause()
         faceProcessor?.stop()
         unregisterReceiver(transitionBroadcastReceiver)
+        stopLocationUpdates()
     }
+
 
     override fun onDestroy() {
         super.onDestroy()
@@ -159,8 +166,6 @@ class DetectionActivity : AppCompatActivity(), FaceDetectorProcessor.OnFaceDetec
 
         ActivityRecognition.getClient(this)
             .requestActivityUpdates(500, transitionReceiverPendingIntent)
-            .addOnSuccessListener { Log.d(TAG, "ACTIVITY_TRACK_SUCCESS") }
-            .addOnFailureListener { Log.d(TAG, "ACTIVITY_TRACK_FAILURE") }
     }
 
     private fun bindPreviewUseCase() {
@@ -196,10 +201,7 @@ class DetectionActivity : AppCompatActivity(), FaceDetectorProcessor.OnFaceDetec
 
         needUpdateGraphicOverlayImageSourceInfo = true
 
-        //the cameraX method listener method to send stream of data (proxyImage) for whatever analysis we need
         analysisUseCase?.setAnalyzer(
-            // imageProcessor.processImageProxy will use another thread to run the detection underneath,
-            // thus we can just runs the analyzer itself on main thread.
             ContextCompat.getMainExecutor(this)
         ) { imageProxy: ImageProxy ->
             if (needUpdateGraphicOverlayImageSourceInfo) {
@@ -209,7 +211,6 @@ class DetectionActivity : AppCompatActivity(), FaceDetectorProcessor.OnFaceDetec
             try {
                 faceProcessor!!.processImageProxy(binding.graphicOverlay, imageProxy)
             } catch (e: MlKitException) {
-                Log.e(TAG, "Failed to process image. Error: " + e.localizedMessage)
                 Toast.makeText(applicationContext, e.localizedMessage, Toast.LENGTH_SHORT).show()
             }
         }
@@ -273,15 +274,11 @@ class DetectionActivity : AppCompatActivity(), FaceDetectorProcessor.OnFaceDetec
                 permission
             ) == PackageManager.PERMISSION_GRANTED
         ) {
-            Log.i(TAG, "Permission granted: $permission")
             return true
         }
-        Log.i(TAG, "Permission NOT granted: $permission")
         return false
     }
 
-    // update detectedState only if it's going to be different from UI State
-    // then request to updateUI
     override fun onDetect(results: List<Face?>) {
         binding.graphicOverlay.clear()
         if (results.isNotEmpty()) {
@@ -308,18 +305,14 @@ class DetectionActivity : AppCompatActivity(), FaceDetectorProcessor.OnFaceDetec
 
     private fun updateFaceUI(state: FaceDetectionStates) {
         safeDriveMediaPlayer.stop()
-        safeDriveMediaPlayer1.stop()
         unsafeDriveMediaPlayer.stop()
-        unsafeDriveMediaPlayer1.stop()
         noFaceDetectedMediaPlayer.stop()
-        noFaceDetectedMediaPlayer1.stop()
 
-        if (viewModel.inCarDetectionState.value == InCarStates.OUT_CAR) return
+//        if (viewModel.inCarDetectionState.value == InCarStates.OUT_CAR) return
 
         when (state) {
             FaceDetectionStates.SAFE -> {
                 safeDriveMediaPlayer.apply { prepare();start() }
-                safeDriveMediaPlayer1.apply { prepare();start() }
                 binding.faceMessage.apply {
                     text = getString(R.string.detection_safe)
                     setBackgroundColor(
@@ -330,9 +323,9 @@ class DetectionActivity : AppCompatActivity(), FaceDetectorProcessor.OnFaceDetec
                     )
                 }
             }
+
             FaceDetectionStates.UNSAFE -> {
                 unsafeDriveMediaPlayer.apply { prepare();start() }
-                unsafeDriveMediaPlayer1.apply { prepare();start() }
                 binding.faceMessage.apply {
                     text = getString(R.string.detection_unsafe)
                     setBackgroundColor(
@@ -343,9 +336,9 @@ class DetectionActivity : AppCompatActivity(), FaceDetectorProcessor.OnFaceDetec
                     )
                 }
             }
+
             FaceDetectionStates.NO_FACE -> {
                 noFaceDetectedMediaPlayer.apply { prepare();start() }
-                noFaceDetectedMediaPlayer1.apply { prepare();start() }
                 binding.faceMessage.apply {
                     text = getString(R.string.detection_no_face)
                     setBackgroundColor(
@@ -374,6 +367,7 @@ class DetectionActivity : AppCompatActivity(), FaceDetectorProcessor.OnFaceDetec
                     )
                 }
             }
+
             InCarStates.OUT_CAR -> {
                 binding.graphicOverlay.clear()
                 binding.faceMessage.visibility = View.INVISIBLE
@@ -391,20 +385,326 @@ class DetectionActivity : AppCompatActivity(), FaceDetectorProcessor.OnFaceDetec
         }
     }
 
+
+    private fun setupLocationClient() {
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
+        locationCallback = object : LocationCallback() {
+            override fun onLocationResult(locationResult: LocationResult) {
+                for (location in locationResult.locations) {
+                    val speed = location.speed // speed in meters/second
+                    val speedKmH = speed * 3.6 // convert to km/h
+                    Log.d("Speed", "Speed: $speedKmH km/h")
+                    Toast.makeText(
+                        this@DetectionActivity,
+                        "Speed: $speedKmH km/h",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    binding.speedTextView.text =
+                        getString(R.string.speed_text, speedKmH) // Update TextView
+                }
+            }
+        }
+    }
+
+    @SuppressLint("MissingPermission")
+    private fun startLocationUpdates() {
+        val locationRequest = LocationRequest.Builder(
+            Priority.PRIORITY_HIGH_ACCURACY,
+            2000
+        ).apply {
+            setMinUpdateIntervalMillis(1000)
+        }.build()
+
+        fusedLocationClient.requestLocationUpdates(locationRequest, locationCallback, null)
+    }
+
+    private fun stopLocationUpdates() {
+        fusedLocationClient.removeLocationUpdates(locationCallback)
+    }
+
+
     inner class TransitionsReceiver : BroadcastReceiver() {
 
         override fun onReceive(context: Context, intent: Intent) {
             val res = ActivityRecognitionResult.extractResult(intent)
-            Log.d(TAG, res?.mostProbableActivity.toString())
+            viewModel.inCarDetectionState.value = InCarStates.IN_CAR
+
             if (res?.mostProbableActivity?.type == DetectedActivity.IN_VEHICLE) {
                 viewModel.inCarDetectionState.value = InCarStates.IN_CAR
-                Log.d(TAG, "IN_VEHICLE_ENTER")
             } else {
                 viewModel.inCarDetectionState.value = InCarStates.OUT_CAR
                 viewModel.uiFaceDetectionState.value = FaceDetectionStates.NO_FACE
-                Log.d(TAG, "IN_VEHICLE_EXIT")
             }
         }
     }
 
 }
+
+
+
+
+
+
+//class DetectionActivity : AppCompatActivity(), FaceDetectorProcessor.OnFaceDetectListener {
+//
+//    companion object {
+//        private const val PERMISSION_REQUESTS = 1
+//
+//        private val REQUIRED_RUNTIME_PERMISSIONS = arrayOf(
+//            Manifest.permission.CAMERA,
+//            Manifest.permission.ACCESS_FINE_LOCATION,
+//            Manifest.permission.ACCESS_COARSE_LOCATION
+//        )
+//    }
+//
+//    private lateinit var binding: ActivityDetectionBinding
+//    private var cameraProvider: ProcessCameraProvider? = null
+//    private var previewUseCase: Preview? = null
+//    private var analysisUseCase: ImageAnalysis? = null
+//    private var faceProcessor: FaceDetectorProcessor? = null
+//    private var needUpdateGraphicOverlayImageSourceInfo = false
+//    private val camSelector = CameraSelector.Builder().requireLensFacing(LENS_FACING_FRONT).build()
+//    private val viewModel: DetectionActivityViewModel by viewModels()
+//
+//    private lateinit var safeDriveMediaPlayer: MediaPlayer
+//    private lateinit var unsafeDriveMediaPlayer: MediaPlayer
+//    private lateinit var noFaceDetectedMediaPlayer: MediaPlayer
+//    private lateinit var fusedLocationClient: FusedLocationProviderClient
+//    private lateinit var locationCallback: LocationCallback
+//
+//    override fun onCreate(savedInstanceState: Bundle?) {
+//        super.onCreate(savedInstanceState)
+//
+//        if (!isRuntimePermissionsGranted()) {
+//            getRuntimePermissions()
+//        }
+//
+//        safeDriveMediaPlayer = MediaPlayer.create(this, R.raw.upward)
+//        unsafeDriveMediaPlayer = MediaPlayer.create(this, R.raw.downward)
+//        noFaceDetectedMediaPlayer = MediaPlayer.create(this, R.raw.error)
+//
+//        binding = ActivityDetectionBinding.inflate(layoutInflater)
+//        setContentView(binding.root)
+//
+//        viewModel.apply {
+//            processCameraProvider?.observe(this@DetectionActivity) { provider ->
+//                cameraProvider = provider
+//                bindPreviewUseCase()
+//            }
+//            uiFaceDetectionState.observe(this@DetectionActivity) { state -> updateFaceUI(state) }
+//        }
+//
+//        setupLocationClient()
+//    }
+//
+//    override fun onResume() {
+//        super.onResume()
+//        bindAnalysisUseCase()
+//        bindPreviewUseCase()
+//        startLocationUpdates()
+//    }
+//
+//    override fun onPause() {
+//        super.onPause()
+//        faceProcessor?.stop()
+//        stopLocationUpdates()
+//    }
+//
+//    override fun onDestroy() {
+//        super.onDestroy()
+//        faceProcessor?.stop()
+//    }
+//
+//    private fun bindPreviewUseCase() {
+//        if (cameraProvider == null) {
+//            return
+//        }
+//        if (previewUseCase != null) {
+//            cameraProvider!!.unbind(previewUseCase)
+//        }
+//
+//        previewUseCase = Preview.Builder().setTargetRotation(ROTATION_180).build()
+//        previewUseCase!!.setSurfaceProvider(binding.previewView.surfaceProvider)
+//        cameraProvider!!.bindToLifecycle(this, camSelector, previewUseCase)
+//    }
+//
+//    @SuppressLint("UnsafeOptInUsageError")
+//    private fun bindAnalysisUseCase() {
+//        unbindAnalysisUseCase() // Unbind previous use-case
+//
+//        val faceDetectorOptions = FaceDetectorOptions.Builder()
+//            .setLandmarkMode(FaceDetectorOptions.LANDMARK_MODE_NONE)
+//            .setContourMode(FaceDetectorOptions.CONTOUR_MODE_NONE)
+//            .setClassificationMode(FaceDetectorOptions.CLASSIFICATION_MODE_ALL)
+//            .setPerformanceMode(FaceDetectorOptions.PERFORMANCE_MODE_FAST)
+//            .setMinFaceSize(0.1f)
+//            .enableTracking()
+//
+//        faceProcessor = FaceDetectorProcessor(faceDetectorOptions.build())
+//            .apply { setOnFaceDetectListener(this@DetectionActivity) }
+//
+//        analysisUseCase = ImageAnalysis.Builder().build()
+//
+//        needUpdateGraphicOverlayImageSourceInfo = true
+//
+//        analysisUseCase?.setAnalyzer(
+//            ContextCompat.getMainExecutor(this)
+//        ) { imageProxy: ImageProxy ->
+//            if (needUpdateGraphicOverlayImageSourceInfo) {
+//                binding.graphicOverlay.setImageSourceInfo(imageProxy.height, imageProxy.width, true)
+//                needUpdateGraphicOverlayImageSourceInfo = false
+//            }
+//            try {
+//                faceProcessor!!.processImageProxy(binding.graphicOverlay, imageProxy)
+//            } catch (e: MlKitException) {
+//                Toast.makeText(applicationContext, e.localizedMessage, Toast.LENGTH_SHORT).show()
+//            }
+//        }
+//
+//        cameraProvider!!.bindToLifecycle(this, camSelector, analysisUseCase)
+//    }
+//
+//    private fun unbindAnalysisUseCase() {
+//        if (cameraProvider == null) {
+//            return
+//        }
+//        if (analysisUseCase != null) {
+//            cameraProvider!!.unbind(analysisUseCase)
+//        }
+//        if (faceProcessor != null) {
+//            faceProcessor!!.stop()
+//        }
+//    }
+//
+//    private fun isRuntimePermissionsGranted(): Boolean {
+//        for (permission in REQUIRED_RUNTIME_PERMISSIONS) {
+//            if (!isPermissionGranted(this, permission)) {
+//                return false
+//            }
+//        }
+//        return true
+//    }
+//
+//    private fun getRuntimePermissions() {
+//        val permissionsToRequest = REQUIRED_RUNTIME_PERMISSIONS.filter {
+//            !isPermissionGranted(this, it)
+//        }
+//        if (permissionsToRequest.isNotEmpty()) {
+//            ActivityCompat.requestPermissions(
+//                this,
+//                permissionsToRequest.toTypedArray(),
+//                PERMISSION_REQUESTS
+//            )
+//        }
+//    }
+//
+//    private fun isPermissionGranted(context: Context, permission: String): Boolean {
+//        return ContextCompat.checkSelfPermission(
+//            context,
+//            permission
+//        ) == PackageManager.PERMISSION_GRANTED
+//    }
+//
+//    override fun onDetect(results: List<Face?>) {
+//        binding.graphicOverlay.clear()
+//        if (results.isNotEmpty()) {
+//            val face = results[0] // Only process the first face
+//            val reop = face?.rightEyeOpenProbability
+//            val leop = face?.leftEyeOpenProbability
+//
+//            if (reop == null || leop == null) {
+//                viewModel.updateFaceDetectionState(FaceDetectionStates.NO_FACE)
+//            }
+//
+//            if (reop != null && leop != null) {
+//                if (reop < 0.1f && leop < 0.1f) {
+//                    viewModel.updateFaceDetectionState(FaceDetectionStates.UNSAFE)
+//                } else if (reop > 0.4f && leop > 0.4f) {
+//                    viewModel.updateFaceDetectionState(FaceDetectionStates.SAFE)
+//                }
+//            }
+//        } else {
+//            viewModel.updateFaceDetectionState(FaceDetectionStates.NO_FACE)
+//        }
+//    }
+//
+//    private fun updateFaceUI(state: FaceDetectionStates) {
+//        safeDriveMediaPlayer.stop()
+//        unsafeDriveMediaPlayer.stop()
+//        noFaceDetectedMediaPlayer.stop()
+//
+//        when (state) {
+//            FaceDetectionStates.SAFE -> {
+//                safeDriveMediaPlayer.apply { prepare(); start() }
+//                binding.faceMessage.apply {
+//                    text = getString(R.string.detection_safe)
+//                    setBackgroundColor(
+//                        ContextCompat.getColor(
+//                            applicationContext,
+//                            R.color.transparent_holo_green_dark
+//                        )
+//                    )
+//                }
+//            }
+//            FaceDetectionStates.UNSAFE -> {
+//                unsafeDriveMediaPlayer.apply { prepare(); start() }
+//                binding.faceMessage.apply {
+//                    text = getString(R.string.detection_unsafe)
+//                    setBackgroundColor(
+//                        ContextCompat.getColor(
+//                            applicationContext,
+//                            R.color.transparent_holo_red_dark
+//                        )
+//                    )
+//                }
+//            }
+//            FaceDetectionStates.NO_FACE -> {
+//                noFaceDetectedMediaPlayer.apply { prepare(); start() }
+//                binding.faceMessage.apply {
+//                    text = getString(R.string.detection_no_face)
+//                    setBackgroundColor(
+//                        ContextCompat.getColor(
+//                            applicationContext,
+//                            R.color.transparent_holo_yellow_dark
+//                        )
+//                    )
+//                }
+//            }
+//        }
+//    }
+//
+//    private fun setupLocationClient() {
+//        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
+//        locationCallback = object : LocationCallback() {
+//            override fun onLocationResult(locationResult: LocationResult) {
+//                for (location in locationResult.locations) {
+//                    val speed = location.speed // Speed in meters/second
+//                    val speedKmH = speed * 3.6 // Convert to km/h
+//                    Log.d("Speed", "Speed: $speedKmH km/h")
+//                    binding.speedTextView.text = getString(R.string.speed_text, speedKmH) // Update TextView
+//                }
+//            }
+//        }
+//    }
+//
+//    @SuppressLint("MissingPermission")
+//    private fun startLocationUpdates() {
+//        val locationRequest = LocationRequest.Builder(
+//            Priority.PRIORITY_HIGH_ACCURACY,
+//            2000
+//        ).apply {
+//            setMinUpdateIntervalMillis(1000)
+//        }.build()
+//
+//        fusedLocationClient.requestLocationUpdates(locationRequest, locationCallback, null)
+//    }
+//
+//    private fun stopLocationUpdates() {
+//        fusedLocationClient.removeLocationUpdates(locationCallback)
+//    }
+//}
+//
+//
+//
+//
+////

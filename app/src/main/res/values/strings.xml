@@ -7,6 +7,9 @@
     <string name="in_vehicle">✅ Gaari mai hai tu. ✅</string>
     <string name="out_vehicle">Gaari mai beth bsdk</string>
 
+    <string name="speed_text">Speed: %.2f km/h</string>
+
+
     <string name="camera">Driving Mode</string>
     <string name="info">Info</string>
     <string name="settings">Settings</string>

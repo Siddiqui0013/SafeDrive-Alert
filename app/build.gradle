@@ -29,6 +29,7 @@ android {
     }
     buildFeatures{
         viewBinding true
+        buildConfig true
     }
     kotlinOptions {
         jvmTarget = '1.8'
@@ -51,6 +52,14 @@ dependencies {
 
     implementation libs.play.services.mlkit.face.detection
     implementation libs.play.services.location
+
+    implementation libs.opencv
+
+    implementation(libs.openpnp.opencv)
+    implementation(libs.commons.math3)
+    implementation(libs.kotlinx.cli)
+
+
 
     implementation libs.guava
 

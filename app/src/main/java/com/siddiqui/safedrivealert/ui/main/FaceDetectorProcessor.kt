@@ -6,8 +6,7 @@ import androidx.camera.core.ImageProxy
 import com.google.android.gms.tasks.TaskExecutors
 import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.face.*
-import com.siddiqui.safedrivealert.ui.main.FaceGraphic
-import com.siddiqui.safedrivealert.ui.main.GraphicOverlay
+
 
 
 import java.util.*
@@ -37,10 +36,10 @@ class FaceDetectorProcessor(detectorOptions: FaceDetectorOptions?) {
 
         private fun logExtrasForTesting(face: Face?) {
             if (face != null) {
-                Log.v(MANUAL_TESTING_LOG, "face bounding box:" + face.boundingBox.flattenToString())
-                Log.v(MANUAL_TESTING_LOG, "face Euler Angle X: " + face.headEulerAngleX)
-                Log.v(MANUAL_TESTING_LOG, "face Euler Angle Y: " + face.headEulerAngleY)
-                Log.v(MANUAL_TESTING_LOG, "face Euler Angle Z: " + face.headEulerAngleZ)
+//                Log.v(MANUAL_TESTING_LOG, "face bounding box:" + face.boundingBox.flattenToString())
+//                Log.v(MANUAL_TESTING_LOG, "face Euler Angle X: " + face.headEulerAngleX)
+//                Log.v(MANUAL_TESTING_LOG, "face Euler Angle Y: " + face.headEulerAngleY)
+//                Log.v(MANUAL_TESTING_LOG, "face Euler Angle Z: " + face.headEulerAngleZ)
                 // All landmarks
                 val landMarkTypes = intArrayOf(
                     FaceLandmark.MOUTH_BOTTOM, FaceLandmark.MOUTH_RIGHT,
@@ -56,41 +55,41 @@ class FaceDetectorProcessor(detectorOptions: FaceDetectorOptions?) {
                 for (i in landMarkTypes.indices) {
                     val landmark = face.getLandmark(landMarkTypes[i])
                     if (landmark == null) {
-                        Log.v(
-                            MANUAL_TESTING_LOG,
-                            "No landmark of type: " + landMarkTypesStrings[i] + " has been detected"
-                        )
+//                        Log.v(
+//                            MANUAL_TESTING_LOG,
+//                            "No landmark of type: " + landMarkTypesStrings[i] + " has been detected"
+//                        )
                     } else {
                         val landmarkPosition = landmark.position
                         val landmarkPositionStr =
                             String.format(
                                 Locale.US, "x: %f , y: %f", landmarkPosition.x, landmarkPosition.y
                             )
-                        Log.v(
-                            MANUAL_TESTING_LOG,
-                            "Position for face landmark: " +
-                                    landMarkTypesStrings[i] +
-                                    " is :" +
-                                    landmarkPositionStr
-                        )
+//                        Log.v(
+//                            MANUAL_TESTING_LOG,
+//                            "Position for face landmark: " +
+//                                    landMarkTypesStrings[i] +
+//                                    " is :" +
+//                                    landmarkPositionStr
+//                        )
                     }
                 }
-                Log.v(
-                    MANUAL_TESTING_LOG,
-                    "face left eye open probability: " + face.leftEyeOpenProbability
-                )
-                Log.v(
-                    MANUAL_TESTING_LOG,
-                    "face right eye open probability: " + face.rightEyeOpenProbability
-                )
-                Log.v(
-                    MANUAL_TESTING_LOG,
-                    "face smiling probability: " + face.smilingProbability
-                )
-                Log.v(
-                    MANUAL_TESTING_LOG,
-                    "face tracking id: " + face.trackingId
-                )
+//                Log.v(
+//                    MANUAL_TESTING_LOG,
+//                    "face left eye open probability: " + face.leftEyeOpenProbability
+//                )
+//                Log.v(
+//                    MANUAL_TESTING_LOG,
+//                    "face right eye open probability: " + face.rightEyeOpenProbability
+//                )
+//                Log.v(
+//                    MANUAL_TESTING_LOG,
+//                    "face smiling probability: " + face.smilingProbability
+//                )
+//                Log.v(
+//                    MANUAL_TESTING_LOG,
+//                    "face tracking id: " + face.trackingId
+//                )
             }
         }
     }
@@ -114,19 +113,15 @@ class FaceDetectorProcessor(detectorOptions: FaceDetectorOptions?) {
 
         detector = FaceDetection.getClient(options)
 
-        Log.v(MANUAL_TESTING_LOG, "Face detector options: $options")
+//        Log.v(MANUAL_TESTING_LOG, "Face detector options: $options")
     }
 
-    // -----------------Code for processing live preview frame from CameraX API-----------------------
     @ExperimentalGetImage
     fun processImageProxy(graphicOverlay: GraphicOverlay, image: ImageProxy) {
         if (isShutdown) return
 
-        //use detector's async-task to detect off-thread and call detector.close() on finish
         detector.process(InputImage.fromMediaImage(image.image!!, image.imageInfo.rotationDegrees))
-            // When the image is from CameraX analysis use case, must call image.close() on received
-            // images when finished using them. Otherwise, new images may not be received or the camera
-            // may stall.
+
             .addOnCompleteListener { image.close() }
             .addOnSuccessListener(executor) { results ->
                 graphicOverlay.clear()
@@ -146,8 +141,6 @@ class FaceDetectorProcessor(detectorOptions: FaceDetectorOptions?) {
                 }
             }
             .addOnFailureListener(executor) { e ->
-                Log.e(TAG, "Face detection failed $e")
-                Log.d(TAG, "Failed to process. Error: " + e.localizedMessage)
                 e.printStackTrace()
             }
 

@@ -19,5 +19,11 @@ class CameraActivity : AppCompatActivity() {
             val intent = Intent(this, DetectionActivity::class.java)
             startActivity(intent)
         }
+
+        binding.startLaneDetection.setOnClickListener{
+            val intent = Intent(this, LaneActivity::class.java)
+            startActivity(intent)
+        }
+        
     }
 }

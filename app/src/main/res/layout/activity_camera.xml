@@ -16,6 +16,12 @@
         android:id="@+id/startDetectionButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Start Detection"/>
+        android:text="Start Drowsiness Detection"/>
+
+    <Button
+        android:id="@+id/startLaneDetection"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Start Lane Detection"/>
 
 </LinearLayout>

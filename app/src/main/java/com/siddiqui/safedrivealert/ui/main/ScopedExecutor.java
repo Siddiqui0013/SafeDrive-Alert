@@ -5,10 +5,6 @@ import androidx.annotation.NonNull;
 import java.util.concurrent.Executor;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-/**
- * Wraps an existing executor to provide a {@link #shutdown} method that allows subsequent
- * cancellation of submitted runnables.
- */
 public class ScopedExecutor implements Executor {
 
     private final Executor executor;
@@ -34,12 +30,6 @@ public class ScopedExecutor implements Executor {
                 });
     }
 
-    /**
-     * After this method is called, no runnables that have been submitted or are subsequently
-     * submitted will start to execute, turning this executor into a no-op.
-     *
-     * <p>Runnables that have already started to execute will continue.
-     */
     public void shutdown() {
         shutdown.set(true);
     }
