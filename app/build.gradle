@@ -15,6 +15,11 @@ android {
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        externalNativeBuild {
+            cmake {
+                cppFlags ''
+            }
+        }
     }
 
     buildTypes {
@@ -33,6 +38,12 @@ android {
     }
     kotlinOptions {
         jvmTarget = '1.8'
+    }
+    externalNativeBuild {
+        cmake {
+            path file('src/main/cpp/CMakeLists.txt')
+            version '3.22.1'
+        }
     }
 }
 
@@ -55,10 +66,16 @@ dependencies {
 
     implementation libs.opencv
 
-    implementation(libs.openpnp.opencv)
+//    implementation(libs.openpnp.opencv)
     implementation(libs.commons.math3)
     implementation(libs.kotlinx.cli)
 
+    implementation libs.androidx.viewpager2
+    implementation libs.androidx.fragment
+
+    implementation libs.lottie
+
+    implementation libs.lottie.compose
 
 
     implementation libs.guava
