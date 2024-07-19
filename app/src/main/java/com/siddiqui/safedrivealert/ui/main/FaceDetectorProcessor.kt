@@ -24,23 +24,18 @@ class FaceDetectorProcessor(detectorOptions: FaceDetectorOptions?) {
     private val fpsTimer = Timer()
     private val executor = ScopedExecutor(TaskExecutors.MAIN_THREAD)
 
-    // Whether this processor is already shut down
     private var isShutdown = false
 
     // Frame count that have been processed so far in an one second interval to calculate FPS.
     private var frameProcessedInInterval = 0
 
     companion object {
-        const val MANUAL_TESTING_LOG = "LogTagForTest"
-        private const val TAG = "FaceDetectorProcessor"
+//        const val MANUAL_TESTING_LOG = "LogTagForTest"
+//        private const val TAG = "FaceDetectorProcessor"
 
         private fun logExtrasForTesting(face: Face?) {
             if (face != null) {
-//                Log.v(MANUAL_TESTING_LOG, "face bounding box:" + face.boundingBox.flattenToString())
-//                Log.v(MANUAL_TESTING_LOG, "face Euler Angle X: " + face.headEulerAngleX)
-//                Log.v(MANUAL_TESTING_LOG, "face Euler Angle Y: " + face.headEulerAngleY)
-//                Log.v(MANUAL_TESTING_LOG, "face Euler Angle Z: " + face.headEulerAngleZ)
-                // All landmarks
+
                 val landMarkTypes = intArrayOf(
                     FaceLandmark.MOUTH_BOTTOM, FaceLandmark.MOUTH_RIGHT,
                     FaceLandmark.MOUTH_LEFT, FaceLandmark.RIGHT_EYE,
@@ -48,10 +43,7 @@ class FaceDetectorProcessor(detectorOptions: FaceDetectorOptions?) {
                     FaceLandmark.LEFT_EAR, FaceLandmark.RIGHT_CHEEK,
                     FaceLandmark.LEFT_CHEEK, FaceLandmark.NOSE_BASE
                 )
-                val landMarkTypesStrings = arrayOf(
-                    "MOUTH_BOTTOM", "MOUTH_RIGHT", "MOUTH_LEFT", "RIGHT_EYE", "LEFT_EYE",
-                    "RIGHT_EAR", "LEFT_EAR", "RIGHT_CHEEK", "LEFT_CHEEK", "NOSE_BASE"
-                )
+
                 for (i in landMarkTypes.indices) {
                     val landmark = face.getLandmark(landMarkTypes[i])
                     if (landmark == null) {
@@ -74,22 +66,6 @@ class FaceDetectorProcessor(detectorOptions: FaceDetectorOptions?) {
 //                        )
                     }
                 }
-//                Log.v(
-//                    MANUAL_TESTING_LOG,
-//                    "face left eye open probability: " + face.leftEyeOpenProbability
-//                )
-//                Log.v(
-//                    MANUAL_TESTING_LOG,
-//                    "face right eye open probability: " + face.rightEyeOpenProbability
-//                )
-//                Log.v(
-//                    MANUAL_TESTING_LOG,
-//                    "face smiling probability: " + face.smilingProbability
-//                )
-//                Log.v(
-//                    MANUAL_TESTING_LOG,
-//                    "face tracking id: " + face.trackingId
-//                )
             }
         }
     }
@@ -112,9 +88,7 @@ class FaceDetectorProcessor(detectorOptions: FaceDetectorOptions?) {
                 .build()
 
         detector = FaceDetection.getClient(options)
-
-//        Log.v(MANUAL_TESTING_LOG, "Face detector options: $options")
-    }
+}
 
     @ExperimentalGetImage
     fun processImageProxy(graphicOverlay: GraphicOverlay, image: ImageProxy) {

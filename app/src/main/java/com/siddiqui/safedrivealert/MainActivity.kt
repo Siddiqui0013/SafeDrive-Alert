@@ -2,6 +2,7 @@ package com.siddiqui.safedrivealert
 
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
 import android.util.Log
 import android.view.animation.AnimationUtils
 import android.widget.ImageButton
@@ -9,6 +10,8 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.os.postDelayed
+import com.airbnb.lottie.LottieAnimationView
 import org.opencv.android.OpenCVLoader
 
 class MainActivity : AppCompatActivity() {
@@ -30,10 +33,23 @@ class MainActivity : AppCompatActivity() {
         val cameraButton:ImageButton = findViewById(R.id.button_camera)
         val settingsButton:ImageButton = findViewById(R.id.button_settings)
 
-        val textAnim:TextView = findViewById(R.id.animated_text)
+//        val textAnim:TextView = findViewById(R.id.animated_text)
 
-        val fadein = AnimationUtils.loadAnimation(this,R.anim.fade_in)
-        textAnim.startAnimation(fadein)
+        val animation: LottieAnimationView = findViewById(R.id.lottie_animation)
+
+//        val fadeIn = AnimationUtils.loadAnimation(this,R.anim.fade_in)
+//        val fadeOut = AnimationUtils.loadAnimation(this,R.anim.fade_out)
+
+//"        textAnim.startAnimation(fadeIn)
+//
+//        Handler().postDelayed({
+//            textAnim.startAnimation(fadeOut)
+//            textAnim.visibility = TextView.GONE
+//"        }, 2000)
+
+//        Handler().postDelayed({
+//            animation.visibility = LottieAnimationView.VISIBLE
+//        }, 5000)
 
         infoButton.setOnClickListener {
             val intent = Intent(this, InfoActivity::class.java)

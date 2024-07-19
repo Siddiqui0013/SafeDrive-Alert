@@ -24,8 +24,6 @@ class PageTwo : Fragment() {
             startActivity(intent)
         }
 
-        val animationView: LottieAnimationView = view.findViewById(R.id.animationViewTwo)
-        // You can set additional properties on the animation view here if needed
 
         return view
     }

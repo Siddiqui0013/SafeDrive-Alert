@@ -9,26 +9,19 @@ class FaceGraphic constructor(overlay: GraphicOverlay?, private val face: Face) 
     GraphicOverlay.Graphic(overlay) {
     private val facePositionPaint: Paint
     private val rectBoxPaint = Paint().apply {
-        color = Color.WHITE
+        color = Color.TRANSPARENT
         style = Paint.Style.STROKE
         strokeWidth = BOX_STROKE_WIDTH
     }
 
     init {
-        val selectedColor = Color.WHITE
+        val selectedColor = Color.TRANSPARENT
         facePositionPaint = Paint()
         facePositionPaint.color = selectedColor
     }
-
-    /** Draws the face annotations for position on the supplied canvas. */
     override fun draw(canvas: Canvas) {
-        // Draws a circle at the position of the detected face, with the face's track id below.
-
-        // Draws a circle at the position of the detected face, with the face's track id below.
         val x = translateX(face.boundingBox.centerX().toFloat())
         val y = translateY(face.boundingBox.centerY().toFloat())
-
-        // Calculate positions.
         val left = x - scale(face.boundingBox.width() / 2.0f)
         val top = y - scale(face.boundingBox.height() / 2.0f)
         val right = x + scale(face.boundingBox.width() / 2.0f)

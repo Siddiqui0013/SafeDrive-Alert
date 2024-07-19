@@ -10,10 +10,7 @@ import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.media.MediaPlayer
 import android.os.Bundle
-import android.os.SystemClock
-import android.util.Log
 import android.view.Surface.ROTATION_180
-import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -26,10 +23,7 @@ import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.google.android.datatransport.BuildConfig
-import com.google.android.gms.common.internal.safeparcel.SafeParcelableSerializer
 import com.google.android.gms.location.ActivityRecognition
-import com.google.android.gms.location.ActivityRecognitionResult
-import com.google.android.gms.location.DetectedActivity
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
@@ -44,6 +38,7 @@ import com.siddiqui.safedrivealert.ui.main.DetectionActivityViewModel.InCarState
 import com.siddiqui.safedrivealert.databinding.ActivityDetectionBinding
 import com.siddiqui.safedrivealert.ui.main.DetectionActivityViewModel
 import com.siddiqui.safedrivealert.ui.main.FaceDetectorProcessor
+import kotlin.math.abs
 
 
 class DetectionActivity : AppCompatActivity(), FaceDetectorProcessor.OnFaceDetectListener {
@@ -75,9 +70,9 @@ class DetectionActivity : AppCompatActivity(), FaceDetectorProcessor.OnFaceDetec
 
     private val viewModel: DetectionActivityViewModel by viewModels()
 
-    private lateinit var safeDriveMediaPlayer: MediaPlayer
-    private lateinit var unsafeDriveMediaPlayer: MediaPlayer
-    private lateinit var noFaceDetectedMediaPlayer: MediaPlayer
+    private lateinit var confirmation: MediaPlayer
+    private lateinit var warning: MediaPlayer
+    private lateinit var error: MediaPlayer
 
 
     private val transitionBroadcastReceiver: TransitionsReceiver = TransitionsReceiver()
@@ -86,6 +81,7 @@ class DetectionActivity : AppCompatActivity(), FaceDetectorProcessor.OnFaceDetec
     private lateinit var locationCallback: LocationCallback
 
 
+    @SuppressLint("VisibleForTests")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -93,9 +89,9 @@ class DetectionActivity : AppCompatActivity(), FaceDetectorProcessor.OnFaceDetec
             getRuntimePermissions()
         }
 
-        safeDriveMediaPlayer = MediaPlayer.create(this, R.raw.upward)
-        unsafeDriveMediaPlayer = MediaPlayer.create(this, R.raw.downward)
-        noFaceDetectedMediaPlayer = MediaPlayer.create(this, R.raw.error)
+        confirmation = MediaPlayer.create(this, R.raw.confirmation)
+        warning = MediaPlayer.create(this, R.raw.warning)
+        error = MediaPlayer.create(this, R.raw.error)
 
 
         binding = ActivityDetectionBinding.inflate(layoutInflater)
@@ -112,26 +108,6 @@ class DetectionActivity : AppCompatActivity(), FaceDetectorProcessor.OnFaceDetec
 
         registerActivityRecognition()
         setupLocationClient()
-
-        binding.carMessage.setOnClickListener {
-            val intent = Intent()
-            intent.action = TRANSITIONS_RECEIVER_ACTION
-            val result = ActivityRecognitionResult(
-                DetectedActivity(
-                    if (viewModel.inCarDetectionState.value != InCarStates.IN_CAR)
-                        DetectedActivity.IN_VEHICLE
-                    else
-                        DetectedActivity.STILL,
-                    100
-                ), 5000, SystemClock.elapsedRealtimeNanos()
-            )
-            SafeParcelableSerializer.serializeToIntentExtra(
-                result, intent,
-                "com.google.android.location.internal.EXTRA_ACTIVITY_RESULT"
-            )
-            this.sendBroadcast(intent)
-        }
-
     }
 
     override fun onResume() {
@@ -147,7 +123,6 @@ class DetectionActivity : AppCompatActivity(), FaceDetectorProcessor.OnFaceDetec
         unregisterReceiver(transitionBroadcastReceiver)
         stopLocationUpdates()
     }
-
 
     override fun onDestroy() {
         super.onDestroy()
@@ -180,7 +155,6 @@ class DetectionActivity : AppCompatActivity(), FaceDetectorProcessor.OnFaceDetec
         previewUseCase!!.setSurfaceProvider(binding.previewView.surfaceProvider)
         cameraProvider!!.bindToLifecycle(this, camSelector, previewUseCase)
     }
-
 
     @SuppressLint("UnsafeOptInUsageError")
     private fun bindAnalysisUseCase() {
@@ -282,7 +256,7 @@ class DetectionActivity : AppCompatActivity(), FaceDetectorProcessor.OnFaceDetec
     override fun onDetect(results: List<Face?>) {
         binding.graphicOverlay.clear()
         if (results.isNotEmpty()) {
-            val face = results[0] //Only process the first face
+            val face = results[0]
             val reop = face?.rightEyeOpenProbability
             val leop = face?.leftEyeOpenProbability
 
@@ -302,52 +276,22 @@ class DetectionActivity : AppCompatActivity(), FaceDetectorProcessor.OnFaceDetec
         }
     }
 
-
     private fun updateFaceUI(state: FaceDetectionStates) {
-        safeDriveMediaPlayer.stop()
-        unsafeDriveMediaPlayer.stop()
-        noFaceDetectedMediaPlayer.stop()
-
-//        if (viewModel.inCarDetectionState.value == InCarStates.OUT_CAR) return
+        confirmation.stop()
+        warning.stop()
+        error.stop()
 
         when (state) {
             FaceDetectionStates.SAFE -> {
-                safeDriveMediaPlayer.apply { prepare();start() }
-                binding.faceMessage.apply {
-                    text = getString(R.string.detection_safe)
-                    setBackgroundColor(
-                        ContextCompat.getColor(
-                            applicationContext,
-                            R.color.transparent_holo_green_dark
-                        )
-                    )
-                }
+                confirmation.apply { prepare();start() }
             }
 
             FaceDetectionStates.UNSAFE -> {
-                unsafeDriveMediaPlayer.apply { prepare();start() }
-                binding.faceMessage.apply {
-                    text = getString(R.string.detection_unsafe)
-                    setBackgroundColor(
-                        ContextCompat.getColor(
-                            applicationContext,
-                            R.color.transparent_holo_red_dark
-                        )
-                    )
-                }
+                warning.apply { prepare();start() }
             }
 
             FaceDetectionStates.NO_FACE -> {
-                noFaceDetectedMediaPlayer.apply { prepare();start() }
-                binding.faceMessage.apply {
-                    text = getString(R.string.detection_no_face)
-                    setBackgroundColor(
-                        ContextCompat.getColor(
-                            applicationContext,
-                            R.color.transparent_holo_yellow_dark
-                        )
-                    )
-                }
+                error.apply { prepare();start() }
             }
         }
     }
@@ -356,51 +300,47 @@ class DetectionActivity : AppCompatActivity(), FaceDetectorProcessor.OnFaceDetec
         when (state) {
             InCarStates.IN_CAR -> {
                 bindAnalysisUseCase()
-                binding.faceMessage.visibility = View.VISIBLE
-                binding.carMessage.apply {
-                    text = getString(R.string.in_vehicle)
-                    setBackgroundColor(
-                        ContextCompat.getColor(
-                            applicationContext,
-                            R.color.transparent_holo_green_dark
-                        )
-                    )
-                }
             }
 
             InCarStates.OUT_CAR -> {
                 binding.graphicOverlay.clear()
-                binding.faceMessage.visibility = View.INVISIBLE
                 unbindAnalysisUseCase()
-                binding.carMessage.apply {
-                    text = getString(R.string.out_vehicle)
-                    setBackgroundColor(
-                        ContextCompat.getColor(
-                            applicationContext,
-                            R.color.transparent_holo_red_dark
-                        )
-                    )
-                }
             }
         }
     }
-
-
     private fun setupLocationClient() {
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
         locationCallback = object : LocationCallback() {
             override fun onLocationResult(locationResult: LocationResult) {
                 for (location in locationResult.locations) {
-                    val speed = location.speed // speed in meters/second
-                    val speedKmH = speed * 3.6 // convert to km/h
-                    Log.d("Speed", "Speed: $speedKmH km/h")
-                    Toast.makeText(
-                        this@DetectionActivity,
-                        "Speed: $speedKmH km/h",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                    binding.speedTextView.text =
-                        getString(R.string.speed_text, speedKmH) // Update TextView
+                    val speed = location.speed
+                    val speedKmH = speed * 3.6
+                    val speedLimit = 20
+                    val tolerance = 0.1f
+
+                    binding.speedTextView.text = getString(R.string.speed_text, speedKmH)
+
+                    if (abs(speedKmH - speedLimit) < tolerance ){
+                        binding.speedTextView.apply {
+                            setBackgroundResource(R.drawable.circle_red_background)
+                            setTextColor(ContextCompat.getColor(context,R.color.white))
+                        }
+                    }
+
+                    if(!warning.isPlaying){
+                        warning.start()
+                    }
+                    else {
+                        binding.speedTextView.apply {
+                            setBackgroundResource(R.drawable.circle_background)
+                            setTextColor(ContextCompat.getColor(applicationContext, android.R.color.black))
+                        }
+
+                        if (warning.isPlaying) {
+                            warning.pause()
+                            warning.seekTo(0)
+                        }
+                    }
                 }
             }
         }
@@ -422,22 +362,12 @@ class DetectionActivity : AppCompatActivity(), FaceDetectorProcessor.OnFaceDetec
         fusedLocationClient.removeLocationUpdates(locationCallback)
     }
 
-
     inner class TransitionsReceiver : BroadcastReceiver() {
 
         override fun onReceive(context: Context, intent: Intent) {
-            val res = ActivityRecognitionResult.extractResult(intent)
             viewModel.inCarDetectionState.value = InCarStates.IN_CAR
-
-            if (res?.mostProbableActivity?.type == DetectedActivity.IN_VEHICLE) {
-                viewModel.inCarDetectionState.value = InCarStates.IN_CAR
-            } else {
-                viewModel.inCarDetectionState.value = InCarStates.OUT_CAR
-                viewModel.uiFaceDetectionState.value = FaceDetectionStates.NO_FACE
-            }
         }
     }
-
 }
 
 

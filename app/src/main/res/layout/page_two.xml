@@ -6,11 +6,14 @@
     android:orientation="vertical">
 
     <com.airbnb.lottie.LottieAnimationView
-        android:id="@+id/animationViewTwo"
         android:layout_width="300dp"
         android:layout_height="400dp"
+        android:layout_margin="10dp"
+        android:layout_gravity="center"
+        app:lottie_url="https://cdn.lottielab.com/l/Caio8kLv8r2oTB.json"
         app:lottie_autoPlay="true"
         app:lottie_loop="true"/>
+
 
     <Button
         android:id="@+id/startLaneDetection"
