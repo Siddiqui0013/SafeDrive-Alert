@@ -1,69 +1,159 @@
-<?xml version="1.0" encoding="utf-8"?>
+
+
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".MainActivity">
 
+    <!-- Lottie Animation in the middle of the screen -->
     <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/lottie_animation"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        app:lottie_url="https://lottie.host/f85e8741-cc3a-4b20-ae03-6e5c15b53e2c/InHAtag6hA.json"
-        android:id="@+id/lottie_animation"
+        android:paddingBottom="100dp"
         app:lottie_autoPlay="true"
-        app:lottie_loop="true"/>
+        app:lottie_loop="true"
+        app:lottie_url="https://lottie.host/549b8070-a539-47c3-814f-752b02eed806/hH4wJBnejN.json" />
 
 
+    <!-- Main Get Started Button below the animation -->
+    <Button
+        android:id="@+id/button_camera"
+        android:layout_width="220dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal|bottom"
+        android:layout_marginBottom="130dp"
+        android:text="Get Started"
+        android:textAllCaps="false"
+        android:textSize="20sp"
+        android:paddingHorizontal="32dp"
+        android:textColor="?attr/colorOnSurface"
+        android:paddingVertical="8dp"
+        style="?attr/materialIconButtonOutlinedStyle"
+        app:icon="@drawable/start"
+        android:textAppearance="?attr/textAppearanceLabelLarge"
+        app:backgroundTint="?attr/colorSecondaryContainer"
+        app:iconTint="?attr/colorOnSurface"
+
+        />
+
+    <!-- Info and Settings Buttons aligned horizontally below the Get Started Button -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        android:background="@drawable/menu_bar_background"
+        android:layout_gravity="center_horizontal|bottom"
         android:orientation="horizontal"
-        android:padding="10dp">
+        android:gravity="center"
+        android:layout_marginBottom="60dp"
+        android:paddingTop="16dp">
 
-        <ImageButton
+        <Button
             android:id="@+id/button_info"
-            android:layout_width="0dp"
+            android:layout_width="140dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="@null"
-            android:contentDescription="@string/info"
-            android:src="@drawable/tryv" />
+            android:text="Info"
+            android:textSize="19sp"
+            android:paddingHorizontal="30dp"
+            android:textColor="?attr/colorOnSurface"
+            android:layout_marginEnd="8dp"
+            style="?attr/materialIconButtonOutlinedStyle"
+            app:icon="@drawable/info"
+            android:textAppearance="?attr/textAppearanceLabelLarge"
+            app:backgroundTint="?attr/colorSecondaryContainer"
+            app:iconTint="?attr/colorOnSurface"
 
-        <View
-            android:layout_width="1dp"
-            android:layout_height="match_parent"
-            android:background="@color/separator_color" />
+            />
 
-        <ImageButton
-            android:id="@+id/button_camera"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="@null"
-            android:contentDescription="@string/camera"
-            android:src="@drawable/tryv" />
-
-        <View
-            android:layout_width="1dp"
-            android:layout_height="match_parent"
-            android:background="@color/separator_color" />
-
-        <ImageButton
+        <Button
             android:id="@+id/button_settings"
-            android:layout_width="0dp"
+            android:layout_width="140dp"
+            android:textColor="?attr/colorOnSurface"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="@null"
-            android:contentDescription="@string/settings"
-            android:src="@drawable/tryv" />
+            android:text="Settings"
+            android:textSize="19sp"
+            android:layout_marginStart="80dp"
+            android:paddingHorizontal="13dp"
+            style="?attr/materialIconButtonOutlinedStyle"
+            app:icon="@drawable/settings"
+            android:textAppearance="?attr/textAppearanceLabelLarge"
+            app:backgroundTint="?attr/colorSecondaryContainer"
+            app:iconTint="?attr/colorOnSurface"
+            />
+
+<!--        <FrameLayout-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:paddingHorizontal="30dp"-->
+<!--            >-->
+
+<!--            <LinearLayout-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:orientation="horizontal"-->
+<!--                android:background="@drawable/button_background"-->
+<!--                android:paddingHorizontal="25dp"-->
+<!--                android:paddingVertical="10dp">-->
+
+<!--                <ImageView-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:src="@drawable/info"-->
+<!--                    android:layout_gravity="center_vertical"-->
+<!--                    android:layout_marginEnd="8dp"-->
+<!--                    app:tint="#FFFFFF" />-->
+
+<!--                <TextView-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:text="Info"-->
+<!--                    android:textColor="#FFFFFF"-->
+<!--                    android:textSize="16sp"/>-->
+<!--            </LinearLayout>-->
+
+
+<!--        </FrameLayout>-->
+
+<!--        <FrameLayout-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:paddingHorizontal="30dp"-->
+<!--            >-->
+
+<!--            <LinearLayout-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:orientation="horizontal"-->
+<!--                android:background="@drawable/button_background"-->
+<!--                android:padding="10dp">-->
+
+<!--                <ImageView-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:src="@drawable/settings"-->
+<!--                    android:layout_gravity="center_vertical"-->
+<!--                    android:layout_marginEnd="8dp"-->
+<!--                    app:tint="#FFFFFF" />-->
+
+<!--                <TextView-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:text="Settings"-->
+<!--                    android:textColor="#FFFFFF"-->
+<!--                    android:textSize="16sp"/>-->
+<!--            </LinearLayout>-->
+
+
+<!--        </FrameLayout>-->
+
     </LinearLayout>
 
 
 </FrameLayout>
+
+
 
 
 

@@ -1,5 +1,6 @@
 [versions]
 agp = "8.3.2"
+cameraCamera2 = "1.1.0"
 commonsMath3 = "3.6.1"
 dotlottieAndroid = "0.3.0"
 fragment = "1.8.1"
@@ -23,9 +24,13 @@ playServicesMlkitFaceDetection = "17.1.0"
 lifecycleLivedataKtx = "2.8.1"
 lifecycleViewmodelKtx = "2.8.1"
 fragmentKtx = "1.7.1"
+supportV4 = "28.0.0"
 viewpager2 = "1.1.0"
 
 [libraries]
+androidx-camera-camera2 = { module = "androidx.camera:camera-camera2", version.ref = "cameraCamera2" }
+androidx-camera-lifecycle = { module = "androidx.camera:camera-lifecycle", version.ref = "cameraCamera2" }
+androidx-camera-view = { module = "androidx.camera:camera-view", version.ref = "cameraCamera2" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-fragment = { module = "androidx.fragment:fragment", version.ref = "fragment" }
 androidx-viewpager2 = { module = "androidx.viewpager2:viewpager2", version.ref = "viewpager2" }
@@ -49,6 +54,7 @@ play-services-mlkit-face-detection = { module = "com.google.android.gms:play-ser
 androidx-lifecycle-livedata-ktx = { group = "androidx.lifecycle", name = "lifecycle-livedata-ktx", version.ref = "lifecycleLivedataKtx" }
 androidx-lifecycle-viewmodel-ktx = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-ktx", version.ref = "lifecycleViewmodelKtx" }
 androidx-fragment-ktx = { group = "androidx.fragment", name = "fragment-ktx", version.ref = "fragmentKtx" }
+support-v4 = { module = "com.android.support:support-v4", version.ref = "supportV4" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

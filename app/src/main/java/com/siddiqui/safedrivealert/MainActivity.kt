@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.util.Log
 import android.view.animation.AnimationUtils
+import android.widget.Button
 import android.widget.ImageButton
 import android.widget.TextView
 import android.widget.Toast
@@ -29,13 +30,13 @@ class MainActivity : AppCompatActivity() {
 //            return;
 //        }
 
-        val infoButton:ImageButton = findViewById(R.id.button_info)
-        val cameraButton:ImageButton = findViewById(R.id.button_camera)
-        val settingsButton:ImageButton = findViewById(R.id.button_settings)
+        val infoButton:Button = findViewById(R.id.button_info)
+        val cameraButton:Button = findViewById(R.id.button_camera)
+        val settingsButton:Button = findViewById(R.id.button_settings)
 
 //        val textAnim:TextView = findViewById(R.id.animated_text)
 
-        val animation: LottieAnimationView = findViewById(R.id.lottie_animation)
+//        val animation: LottieAnimationView = findViewById(R.id.lottie_animation)
 
 //        val fadeIn = AnimationUtils.loadAnimation(this,R.anim.fade_in)
 //        val fadeOut = AnimationUtils.loadAnimation(this,R.anim.fade_out)
