@@ -26,6 +26,7 @@ lifecycleViewmodelKtx = "2.8.1"
 fragmentKtx = "1.7.1"
 supportV4 = "28.0.0"
 viewpager2 = "1.1.0"
+preferenceKtx = "1.2.1"
 
 [libraries]
 androidx-camera-camera2 = { module = "androidx.camera:camera-camera2", version.ref = "cameraCamera2" }
@@ -55,6 +56,7 @@ androidx-lifecycle-livedata-ktx = { group = "androidx.lifecycle", name = "lifecy
 androidx-lifecycle-viewmodel-ktx = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-ktx", version.ref = "lifecycleViewmodelKtx" }
 androidx-fragment-ktx = { group = "androidx.fragment", name = "fragment-ktx", version.ref = "fragmentKtx" }
 support-v4 = { module = "com.android.support:support-v4", version.ref = "supportV4" }
+androidx-preference-ktx = { group = "androidx.preference", name = "preference-ktx", version.ref = "preferenceKtx" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

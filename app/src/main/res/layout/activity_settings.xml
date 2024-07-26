@@ -1,16 +1,60 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    android:padding="16dp">
+    tools:context=".SettingsActivity">
 
-    <TextView
-        android:layout_width="wrap_content"
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/card"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Settings"
-        android:textSize="18sp" />
+        android:layout_margin="8dp"
+        style="?attr/materialCardViewFilledStyle"
 
-    <!-- Add additional UI elements for settings -->
+        >
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/setting_icon"
+                android:layout_width="150dp"
+                android:layout_height="100dp"
+                android:src="@drawable/logo"
+                android:layout_gravity="center"/>
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chip"
+                android:layout_width="wrap_content"
+                style="@style/Widget.Material3.Chip.Suggestion"
+                android:layout_height="wrap_content"
+                app:chipStrokeWidth="2dp"
+                android:clickable="false"
+                android:checkable="false"
+                app:chipMinHeight="50dp"
+                app:chipStartPadding="20dp"
+                app:chipEndPadding="20dp"
+                android:textSize="30dp"
+                android:text="Settings"
+                android:layout_gravity="center"
+                android:layout_margin="20dp"
+                />
+
+        </LinearLayout>
+
+    </com.google.android.material.card.MaterialCardView>
+
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/settings_recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp"/>
 </LinearLayout>
+

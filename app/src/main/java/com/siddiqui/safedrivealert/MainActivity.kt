@@ -2,33 +2,16 @@ package com.siddiqui.safedrivealert
 
 import android.content.Intent
 import android.os.Bundle
-import android.os.Handler
-import android.util.Log
-import android.view.animation.AnimationUtils
 import android.widget.Button
-import android.widget.ImageButton
-import android.widget.TextView
 import android.widget.Toast
-import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.os.postDelayed
-import com.airbnb.lottie.LottieAnimationView
-import org.opencv.android.OpenCVLoader
+import com.siddiqui.safedrivealert.ui.main.SettingsManager
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(){
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
         setContentView(R.layout.activity_main)
-
-//        if (OpenCVLoader.initLocal()) {
-//            (Toast.makeText(this, "OpenCV initialization Success!", Toast.LENGTH_LONG)).show();
-//            Log.i("TAG", "OpenCV loaded successfully");
-//        } else {
-//            Log.e("TAG", "OpenCV initialization failed!");
-//            (Toast.makeText(this, "OpenCV initialization failed!", Toast.LENGTH_LONG)).show();
-//            return;
-//        }
 
         val infoButton:Button = findViewById(R.id.button_info)
         val cameraButton:Button = findViewById(R.id.button_camera)
@@ -67,5 +50,10 @@ class MainActivity : AppCompatActivity() {
             startActivity(intent)
 
     }
-}
+
+//        val speedLimit = SettingsManager.getSpeedLimit(this)
+//        Toast.makeText(this, "Current speed limit: $speedLimit", Toast.LENGTH_LONG).show()
+
+
+    }
 }

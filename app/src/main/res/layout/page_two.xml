@@ -1,24 +1,31 @@
+<!-- res/layout/activity_drowsiness_detection.xml -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:gravity="center"
     android:orientation="vertical">
 
-    <com.airbnb.lottie.LottieAnimationView
-        android:layout_width="300dp"
-        android:layout_height="400dp"
-        android:layout_margin="10dp"
-        android:layout_gravity="center"
-        app:lottie_url="https://cdn.lottielab.com/l/Caio8kLv8r2oTB.json"
-        app:lottie_autoPlay="true"
-        app:lottie_loop="true"/>
-
+    <ImageView
+        android:id="@+id/detectionImage"
+        android:layout_width="304dp"
+        android:layout_height="398dp"
+        android:layout_marginBottom="50dp"
+        android:contentDescription="Drowsiness Detection"
+        android:src="@drawable/lane" />
 
     <Button
         android:id="@+id/startLaneDetection"
+        style="?attr/materialIconButtonOutlinedStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Start Lane Detection"
-        android:layout_marginTop="30dp"/>
+        android:paddingHorizontal="32dp"
+        android:text="  Lane Detection"
+        android:textAllCaps="false"
+        android:textAppearance="?attr/textAppearanceLabelLarge"
+        android:textColor="?attr/colorOnSurface"
+        android:textSize="18sp"
+        app:backgroundTint="?attr/colorSecondaryContainer"
+        app:icon="@drawable/start"
+        app:iconTint="?attr/colorOnSurface" />
 </LinearLayout>

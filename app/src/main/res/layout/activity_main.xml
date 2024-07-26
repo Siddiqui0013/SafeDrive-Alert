@@ -37,7 +37,6 @@
         android:textAppearance="?attr/textAppearanceLabelLarge"
         app:backgroundTint="?attr/colorSecondaryContainer"
         app:iconTint="?attr/colorOnSurface"
-
         />
 
     <!-- Info and Settings Buttons aligned horizontally below the Get Started Button -->
