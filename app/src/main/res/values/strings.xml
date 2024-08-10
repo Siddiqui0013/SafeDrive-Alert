@@ -8,5 +8,12 @@
     <string name="info">Info</string>
     <string name="settings">Settings</string>
 
+    <string name="detection_safe">Drive.</string>
+    <string name="detection_unsafe">Dont Drive.</string>
+    <string name="detection_no_face">No Face.</string>
+
+    <string name="in_vehicle">In a Car</string>
+    <string name="out_vehicle">Not in  a Car, Click to continue Drowsiness Detection</string>
+
 
 </resources>

@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.widget.Button
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import com.siddiqui.safedrivealert.ui.main.SettingsManager
 
 class MainActivity : AppCompatActivity(){
@@ -16,6 +17,11 @@ class MainActivity : AppCompatActivity(){
         val infoButton:Button = findViewById(R.id.button_info)
         val cameraButton:Button = findViewById(R.id.button_camera)
         val settingsButton:Button = findViewById(R.id.button_settings)
+//        val speedButton:Button = findViewById(R.id.button_speed)
+
+//        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
+//        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+//        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
 
 //        val textAnim:TextView = findViewById(R.id.animated_text)
 
@@ -44,6 +50,11 @@ class MainActivity : AppCompatActivity(){
             val intent = Intent(this, CameraActivity::class.java)
             startActivity(intent)
         }
+
+//        speedButton.setOnClickListener {
+//            val intent = Intent(this, SpeedDetection::class.java)
+//            startActivity(intent)
+//        }
 
         settingsButton.setOnClickListener {
             val intent = Intent(this, SettingsActivity::class.java)

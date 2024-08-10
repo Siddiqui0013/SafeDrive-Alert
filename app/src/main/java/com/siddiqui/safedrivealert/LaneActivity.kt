@@ -162,16 +162,15 @@ package com.siddiqui.safedrivealert
 //    }
 //}
 
+
 import android.os.Bundle
 import android.view.SurfaceView
 import android.view.View
 import android.view.WindowManager
-import android.widget.Toast
 import org.opencv.android.CameraActivity
 import org.opencv.android.CameraBridgeViewBase
 import org.opencv.android.CameraBridgeViewBase.CvCameraViewFrame
 import org.opencv.android.CameraBridgeViewBase.CvCameraViewListener2
-import org.opencv.android.OpenCVLoader
 import org.opencv.core.Mat
 import org.opencv.core.Point
 import org.opencv.core.Scalar
@@ -180,7 +179,6 @@ import org.opencv.core.MatOfPoint
 import org.opencv.imgproc.Imgproc
 import org.opencv.core.Core
 import kotlin.math.sqrt
-import kotlin.concurrent.thread
 
 class LaneActivity : CameraActivity(), CvCameraViewListener2 {
 
@@ -188,12 +186,7 @@ class LaneActivity : CameraActivity(), CvCameraViewListener2 {
 
     public override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        if (OpenCVLoader.initLocal()) {
-            Toast.makeText(this, "OpenCV initialization Success!", Toast.LENGTH_LONG).show()
-        } else {
-            Toast.makeText(this, "OpenCV initialization failed!", Toast.LENGTH_LONG).show()
-            return
-        }
+
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         setContentView(R.layout.activity_lane)
         mOpenCvCameraView = findViewById<View>(R.id.camera_view) as CameraBridgeViewBase

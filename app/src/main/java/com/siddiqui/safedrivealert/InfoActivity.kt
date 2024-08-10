@@ -1,5 +1,6 @@
 package com.siddiqui.safedrivealert
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
@@ -13,21 +14,30 @@ class InfoActivity : AppCompatActivity() {
         enableEdgeToEdge()
         setContentView(R.layout.activity_info)
 
-        val m1Btn :Button = findViewById(R.id.module_drowsiness)
-        val m2Btn :Button = findViewById(R.id.module_speed)
-        val m3Btn :Button = findViewById(R.id.module_lane)
+        val m1Btn: Button = findViewById(R.id.module_drowsiness)
+        val m3Btn: Button = findViewById(R.id.module_lane)
+        val drowsyStartBtn: Button = findViewById(R.id.DrowsyBtn)
+        val laneStartBtn: Button = findViewById(R.id.LaneBtn)
 
         val m1Info: TextView = findViewById(R.id.info_drowsiness)
-        val m2Info: TextView = findViewById(R.id.info_speed)
         val m3Info: TextView = findViewById(R.id.info_lane)
 
         m1Btn.setOnClickListener { toggleVisibility(m1Info) }
-        m2Btn.setOnClickListener { toggleVisibility(m2Info) }
         m3Btn.setOnClickListener { toggleVisibility(m3Info) }
 
+        // Set click listeners to start the activities
+        drowsyStartBtn.setOnClickListener {
+            val intent = Intent(this, DetectionActivity::class.java)
+            startActivity(intent)
+        }
+
+        laneStartBtn.setOnClickListener {
+            val intent = Intent(this, LaneActivity::class.java)
+            startActivity(intent)
+        }
     }
 
-    private fun toggleVisibility( textView: TextView) {
+    private fun toggleVisibility(textView: TextView) {
         if (textView.visibility == View.GONE) {
             textView.visibility = View.VISIBLE
             expand(textView)
@@ -36,8 +46,12 @@ class InfoActivity : AppCompatActivity() {
             collapse(textView)
         }
     }
+
     private fun expand(textView: TextView) {
-        textView.measure(View.MeasureSpec.makeMeasureSpec(textView.width, View.MeasureSpec.EXACTLY), View.MeasureSpec.UNSPECIFIED)
+        textView.measure(
+            View.MeasureSpec.makeMeasureSpec(textView.width, View.MeasureSpec.EXACTLY),
+            View.MeasureSpec.UNSPECIFIED
+        )
         val targetHeight = textView.measuredHeight
 
         textView.visibility = View.VISIBLE

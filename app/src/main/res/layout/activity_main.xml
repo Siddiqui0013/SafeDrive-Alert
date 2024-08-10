@@ -7,6 +7,66 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
+    <LinearLayout
+        android:id="@+id/top_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:background="@drawable/gradient_background"
+        >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:padding="10dp"
+            android:paddingHorizontal="10dp">
+
+            <ImageView
+                android:id="@+id/logo"
+                android:layout_width="110dp"
+                android:layout_height="110dp"
+                android:src="@drawable/logo" />
+
+            <TextView
+                android:id="@+id/app_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="18dp"
+                android:text="SafeDrive Alert"
+                android:textSize="30sp"
+                android:fontFamily="@font/amarante"
+                android:textStyle="bold" />
+
+<!--            android:textColor="@color/black"-->
+
+
+
+
+        </LinearLayout>
+
+<!--        &lt;!&ndash; Short Description &ndash;&gt;-->
+<!--        <TextView-->
+<!--            android:id="@+id/short_description"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginTop="8dp"-->
+<!--            android:fontFamily="@font/amarante"-->
+<!--            android:textColor="@color/black"-->
+<!--            android:text="Ensuring your safety while driving with advanced detection systems."-->
+<!--            android:textSize="25sp"-->
+<!--            android:padding="25dp" />-->
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="5dp"
+            android:paddingTop="10dp"
+            android:background="@drawable/border_bottom" />
+
+    </LinearLayout>
+
     <!-- Lottie Animation in the middle of the screen -->
     <com.airbnb.lottie.LottieAnimationView
         android:id="@+id/lottie_animation"
@@ -82,6 +142,35 @@
             app:iconTint="?attr/colorOnSurface"
             />
 
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal|bottom"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_marginBottom="60dp"
+        android:paddingTop="16dp">
+
+<!--        <Button-->
+<!--            android:id="@+id/button_speed"-->
+<!--            android:layout_width="150dp"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:text="Speed"-->
+<!--            android:textSize="19sp"-->
+<!--            android:paddingHorizontal="30dp"-->
+<!--            android:textColor="?attr/colorOnSurface"-->
+<!--            android:layout_marginEnd="8dp"-->
+<!--            style="?attr/materialIconButtonOutlinedStyle"-->
+<!--            app:icon="@drawable/info"-->
+<!--            android:textAppearance="?attr/textAppearanceLabelLarge"-->
+<!--            app:backgroundTint="?attr/colorSecondaryContainer"-->
+<!--            app:iconTint="?attr/colorOnSurface"-->
+<!--            />-->
+
+    </LinearLayout>
+
 <!--        <FrameLayout-->
 <!--            android:layout_width="wrap_content"-->
 <!--            android:layout_height="wrap_content"-->
@@ -147,7 +236,6 @@
 
 <!--        </FrameLayout>-->
 
-    </LinearLayout>
 
 
 </FrameLayout>

@@ -107,58 +107,78 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:paddingHorizontal="40dp"
+                android:fontFamily="@font/amarante"
                 android:paddingVertical="18dp"
                 android:visibility="gone"
-                android:text="Checks drivers' eyes in real-time and alerts if they feel drowsy. This module uses advanced computer vision techniques to monitor the driver's eye movements and blink rates. If signs of drowsiness are detected, it immediately triggers an alarm to wake the driver, ensuring their safety on the road."
+                android:text="Utilizes Google ML Kit to monitor drivers' eyes in real-time and alerts them if they appear drowsy. This module leverages advanced machine learning techniques to analyze eye movements and blink rates. If signs of drowsiness are detected, an alarm is triggered to wake the driver, ensuring their safety on the road. Additionally, this module includes a speed detection feature that continuously monitors the vehicle's speed. If the driver exceeds the set speed limit, an alarm will sound, prompting them to slow down and maintain safe driving conditions."
                 android:textSize="16sp"
                 />
 
-                <com.google.android.material.divider.MaterialDivider
+
+
+            <Button
+                android:id="@+id/DrowsyBtn"
+                style="?attr/materialIconButtonOutlinedStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=" Start Drowsiness Detection"
+                android:layout_marginLeft="50dp"
+                android:textAllCaps="false"
+                android:textAppearance="?attr/textAppearanceLabelLarge"
+                android:textColor="?attr/colorOnSurface"
+                android:textSize="18sp"
+                app:backgroundTint="?attr/colorSecondaryContainer"
+                app:icon="@drawable/start"
+                app:iconTint="?attr/colorOnSurface"
+                android:layout_marginBottom="20dp"
+                />
+
+            <com.google.android.material.divider.MaterialDivider
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
 
             <!-- Module 2: Speed Detection -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginTop="20dp"
-                android:paddingHorizontal="20dp">
+<!--            <LinearLayout-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:orientation="horizontal"-->
+<!--                android:layout_marginTop="20dp"-->
+<!--                android:paddingHorizontal="20dp">-->
 
-                <Button
-                    style="@style/Widget.Material3.Button.TextButton"
-                    android:id="@+id/module_speed"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:padding="8dp"
-                    android:background="?attr/selectableItemBackground"
-                    android:text="Speed Detection"
-                    android:textSize="18sp"
-                    android:textStyle="bold"
-                    app:iconTint="?attr/colorOnSurface"
+<!--                <Button-->
+<!--                    style="@style/Widget.Material3.Button.TextButton"-->
+<!--                    android:id="@+id/module_speed"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:padding="8dp"-->
+<!--                    android:background="?attr/selectableItemBackground"-->
+<!--                    android:text="Speed Detection"-->
+<!--                    android:textSize="18sp"-->
+<!--                    android:textStyle="bold"-->
+<!--                    app:iconTint="?attr/colorOnSurface"-->
 
-                    android:clickable="true"
-                    app:iconSize="40dp"
-                    android:textColor="?attr/colorOnSurface"
-                    android:focusable="true"
-                    app:icon="@drawable/arrow_right"
-                    />
-            </LinearLayout>
+<!--                    android:clickable="true"-->
+<!--                    app:iconSize="40dp"-->
+<!--                    android:textColor="?attr/colorOnSurface"-->
+<!--                    android:focusable="true"-->
+<!--                    app:icon="@drawable/arrow_right"-->
+<!--                    />-->
+<!--            </LinearLayout>-->
 
-            <TextView
-                android:id="@+id/info_speed"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:paddingHorizontal="40dp"
-                android:paddingVertical="18dp"
-                android:visibility="gone"
-                android:text="Alerts the driver if he exceeds the speed limit. This module uses GPS data to constantly monitor the vehicle's speed. If the speed exceeds the predefined limit, an alert is generated to remind the driver to slow down. This feature helps in maintaining safe driving speeds, reducing the risk of accidents."
-                android:textSize="16sp" />
+<!--            <TextView-->
+<!--                android:id="@+id/info_speed"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_marginTop="8dp"-->
+<!--                android:paddingHorizontal="40dp"-->
+<!--                android:paddingVertical="18dp"-->
+<!--                android:visibility="gone"-->
+<!--                android:text="Alerts the driver if he exceeds the speed limit. This module uses GPS data to constantly monitor the vehicle's speed. If the speed exceeds the predefined limit, an alert is generated to remind the driver to slow down. This feature helps in maintaining safe driving speeds, reducing the risk of accidents."-->
+<!--                android:textSize="16sp" />-->
 
-                <com.google.android.material.divider.MaterialDivider
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
+<!--                <com.google.android.material.divider.MaterialDivider-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"/>-->
 
             <!-- Module 3: Lane Detection -->
             <LinearLayout
@@ -195,12 +215,34 @@
                 android:paddingHorizontal="40dp"
                 android:visibility="gone"
                 android:paddingVertical="18dp"
-                android:text="Detects the lanes through the camera to assist the driver. This module employs sophisticated image processing algorithms to identify lane markings on the road. It provides real-time feedback to the driver, helping them stay within their lane. This feature is particularly useful during night driving or in adverse weather conditions."
+                android:fontFamily="@font/amarante"
+                android:text="Employs OpenCV for real-time lane detection, assisting the driver in staying within their lane. This module uses sophisticated image processing algorithms to identify lane markings on the road, providing real-time feedback to the driver. This feature is particularly useful during night driving or in adverse weather conditions. The module also integrates a speed detection system that monitors the vehicle's speed. If the speed exceeds the set limit, an alarm is triggered, alerting the driver to slow down and drive safely."
                 android:textSize="16sp" />
+
+
+
+            <Button
+                android:id="@+id/LaneBtn"
+                style="?attr/materialIconButtonOutlinedStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=" Start Lane Detection           "
+                android:layout_marginLeft="50dp"
+                android:textAllCaps="false"
+                android:textAppearance="?attr/textAppearanceLabelLarge"
+                android:textColor="?attr/colorOnSurface"
+                android:textSize="18sp"
+                app:backgroundTint="?attr/colorSecondaryContainer"
+                app:icon="@drawable/start"
+                app:iconTint="?attr/colorOnSurface"
+                android:layout_marginBottom="20dp"
+                />
 
                 <com.google.android.material.divider.MaterialDivider
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
+
+
 
         </LinearLayout>
     </ScrollView>

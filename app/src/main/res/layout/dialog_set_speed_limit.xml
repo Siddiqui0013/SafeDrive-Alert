@@ -16,9 +16,4 @@
         android:hint="Enter speed limit"
         android:inputType="number"/>
 
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:minHeight="48dp"
-        android:text="Confirm"/>
 </LinearLayout>

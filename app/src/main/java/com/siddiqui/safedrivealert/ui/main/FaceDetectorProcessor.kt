@@ -73,7 +73,7 @@ class FaceDetectorProcessor(detectorOptions: FaceDetectorOptions?) {
     init {
 
         // a timer, for processing images every five seconds
-        fpsTimer.scheduleAtFixedRate(
+        fpsTimer.schedule(
             object : TimerTask() {
                 override fun run() {
                     frameProcessedInInterval = 0
@@ -100,7 +100,7 @@ class FaceDetectorProcessor(detectorOptions: FaceDetectorOptions?) {
             .addOnSuccessListener(executor) { results ->
                 graphicOverlay.clear()
                 if (results.isNotEmpty()){
-                    graphicOverlay.add(FaceGraphic(graphicOverlay, results[0]))
+                    graphicOverlay.add(FaceGraphic(graphicOverlay, results[0], graphicOverlay.context))
                     graphicOverlay.postInvalidate()
                 }
 

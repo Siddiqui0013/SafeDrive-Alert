@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
     tools:context=".SettingsActivity">
 
     <com.google.android.material.card.MaterialCardView
@@ -14,8 +13,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
         style="?attr/materialCardViewFilledStyle"
-
-        >
+        android:layout_alignParentTop="true">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -27,7 +25,7 @@
                 android:layout_width="150dp"
                 android:layout_height="100dp"
                 android:src="@drawable/logo"
-                android:layout_gravity="center"/>
+                android:layout_gravity="center" />
 
             <com.google.android.material.chip.Chip
                 android:id="@+id/chip"
@@ -43,18 +41,28 @@
                 android:textSize="30dp"
                 android:text="Settings"
                 android:layout_gravity="center"
-                android:layout_margin="20dp"
-                />
+                android:layout_margin="20dp" />
 
         </LinearLayout>
 
     </com.google.android.material.card.MaterialCardView>
 
-
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/settings_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="16dp"/>
-</LinearLayout>
+        android:padding="16dp"
+        android:layout_below="@id/card"
+        android:layout_above="@id/app_version"/>
 
+    <TextView
+        android:id="@+id/app_version"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="App Version 1.0.01"
+        android:layout_centerHorizontal="true"
+        android:textSize="16sp"
+        android:textColor="?attr/colorOnSurface"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="10dp"/>
+</RelativeLayout>

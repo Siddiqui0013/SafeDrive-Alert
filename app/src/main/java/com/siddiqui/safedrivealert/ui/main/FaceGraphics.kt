@@ -1,15 +1,16 @@
 package com.siddiqui.safedrivealert.ui.main
 
+import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 import com.google.mlkit.vision.face.Face
 
-class FaceGraphic constructor(overlay: GraphicOverlay?, private val face: Face) :
+class FaceGraphic(overlay: GraphicOverlay?, private val face: Face, context: Context) :
     GraphicOverlay.Graphic(overlay) {
     private val facePositionPaint: Paint
     private val rectBoxPaint = Paint().apply {
-        color = Color.TRANSPARENT
+        color = SettingsManager.getOverlayColor(context) // Use the saved overlay color
         style = Paint.Style.STROKE
         strokeWidth = BOX_STROKE_WIDTH
     }
