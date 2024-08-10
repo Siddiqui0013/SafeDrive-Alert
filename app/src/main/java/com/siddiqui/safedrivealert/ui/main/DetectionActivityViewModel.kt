@@ -1,7 +1,5 @@
 package com.siddiqui.safedrivealert.ui.main
 
-import androidx.lifecycle.ViewModel
-
 import android.app.Application
 import android.util.Log
 import androidx.camera.lifecycle.ProcessCameraProvider
@@ -12,7 +10,6 @@ import com.google.common.util.concurrent.ListenableFuture
 import java.util.concurrent.ExecutionException
 
 class DetectionActivityViewModel(application: Application) : AndroidViewModel(application) {
-    // TODO: Implement the ViewModel
 
     enum class FaceDetectionStates(val intervalTolerancePolicy: Int) {
         SAFE(1),
@@ -27,7 +24,6 @@ class DetectionActivityViewModel(application: Application) : AndroidViewModel(ap
     val faceDetectionState = MutableLiveData(FaceDetectionStates.NO_FACE)
     val uiFaceDetectionState = MutableLiveData(FaceDetectionStates.NO_FACE)
 
-    //we will only change uiState when the image has been in the same state for 3 intervals
     private var stateChangeCounter = 0
 
     val inCarDetectionState = MutableLiveData(InCarStates.OUT_CAR)
@@ -42,9 +38,7 @@ class DetectionActivityViewModel(application: Application) : AndroidViewModel(ap
                         try {
                             cameraProviderLiveData!!.setValue(cameraProviderFuture.get())
                         } catch (e: ExecutionException) {
-                            Log.e(TAG, "Unhandled exception", e)
-                        } catch (e: InterruptedException) {
-                            Log.e(TAG, "Unhandled exception", e)
+                            Log.e("CameraX", "Unhandled exception", e)
                         }
                     },
                     ContextCompat.getMainExecutor(getApplication())
@@ -66,13 +60,8 @@ class DetectionActivityViewModel(application: Application) : AndroidViewModel(ap
             return
         }
 
-        //sync detected state with UI State
         stateChangeCounter = 0
         uiFaceDetectionState.value= faceDetectionState.value
     }
 
-
-    companion object {
-        private const val TAG = "CameraXViewModel"
-    }
 }
