@@ -15,7 +15,6 @@ object SettingsManager {
         return context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
     }
 
-
     fun setTheme(context: Context, mode: Int) {
         val editor = getPreferences(context).edit()
         editor.putInt(THEME_KEY, mode)
@@ -24,7 +23,6 @@ object SettingsManager {
     fun getSelectedTheme(context: Context): Int {
         return getPreferences(context).getInt(THEME_KEY, AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
     }
-
 
     fun setSpeedLimit(context: Context, speedLimit: Int) {
         val editor = getPreferences(context).edit()
@@ -35,15 +33,12 @@ object SettingsManager {
         return getPreferences(context).getInt(SPEED_LIMIT_KEY, 0)
     }
 
-
     fun setOverlayColor(context: Context, color: Int) {
         val editor = getPreferences(context).edit()
         editor.putInt(OVERLAY_COLOR_KEY, color)
         editor.apply()
     }
-
     fun getOverlayColor(context: Context): Int {
         return getPreferences(context).getInt(OVERLAY_COLOR_KEY, Color.TRANSPARENT)
     }
-
 }

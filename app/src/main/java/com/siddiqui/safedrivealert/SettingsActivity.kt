@@ -31,10 +31,18 @@ class SettingsActivity : AppCompatActivity() {
     }
 
     private fun showSelectThemeDialog() {
+
+        val currentTheme = SettingsManager.getSelectedTheme(this)
+        val checkedItem = when (currentTheme) {
+            AppCompatDelegate.MODE_NIGHT_YES -> 0
+            AppCompatDelegate.MODE_NIGHT_NO -> 1
+            else -> 2
+        }
+
         val themes = arrayOf("Dark", "Light", "System Default")
         AlertDialog.Builder(this)
             .setTitle("Select Theme")
-            .setSingleChoiceItems(themes, -1) { dialog, which ->
+            .setSingleChoiceItems(themes, checkedItem) { dialog, which ->
                 // Handle theme selection
                 val selectedTheme = when (which) {
                     0 -> AppCompatDelegate.MODE_NIGHT_YES
@@ -53,6 +61,7 @@ class SettingsActivity : AppCompatActivity() {
     private fun showSetSpeedLimitDialog() {
         val dialogView = layoutInflater.inflate(R.layout.dialog_set_speed_limit, null)
         val speedLimitInput = dialogView.findViewById<EditText>(R.id.speed_limit_input)
+        speedLimitInput.hint = SettingsManager.getSpeedLimit(this).toString()
 
         AlertDialog.Builder(this)
             .setTitle("Set Speed Limit (From 20 to 100)")
@@ -78,10 +87,20 @@ class SettingsActivity : AppCompatActivity() {
 
 
     private fun showChangeOverlayColorDialog() {
+
+        val currentColor = SettingsManager.getOverlayColor(this)
+        val checkedItem = when (currentColor) {
+            Color.WHITE -> 0
+            Color.BLACK -> 1
+            Color.RED -> 2
+            Color.GREEN -> 3
+            else -> 4
+        }
+
         val colors = arrayOf("White", "Black", "Red", "Green", "No Overlay")
         AlertDialog.Builder(this)
             .setTitle("Change Overlay Color")
-            .setSingleChoiceItems(colors, -1) { dialog, which ->
+            .setSingleChoiceItems(colors, checkedItem) { dialog, which ->
                 // Handle color selection
                 val selectedColor = when (which) {
                     0 -> Color.WHITE
