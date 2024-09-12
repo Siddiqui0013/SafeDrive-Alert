@@ -6,6 +6,7 @@ import android.view.View
 import android.widget.Button
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
+import com.siddiqui.safedrivealert.LaneActivity
 import androidx.appcompat.app.AppCompatActivity
 
 class InfoActivity : AppCompatActivity() {

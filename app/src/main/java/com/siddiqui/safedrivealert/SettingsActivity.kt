@@ -43,7 +43,6 @@ class SettingsActivity : AppCompatActivity() {
         AlertDialog.Builder(this)
             .setTitle("Select Theme")
             .setSingleChoiceItems(themes, checkedItem) { dialog, which ->
-                // Handle theme selection
                 val selectedTheme = when (which) {
                     0 -> AppCompatDelegate.MODE_NIGHT_YES
                     1 -> AppCompatDelegate.MODE_NIGHT_NO
@@ -52,7 +51,7 @@ class SettingsActivity : AppCompatActivity() {
 
                 SettingsManager.setTheme(this, selectedTheme)
                 AppCompatDelegate.setDefaultNightMode(selectedTheme)
-                recreate() // Recreate activity to apply theme changes
+                recreate()
                 dialog.dismiss()
             }
             .show()
@@ -64,17 +63,17 @@ class SettingsActivity : AppCompatActivity() {
         speedLimitInput.hint = SettingsManager.getSpeedLimit(this).toString()
 
         AlertDialog.Builder(this)
-            .setTitle("Set Speed Limit (From 20 to 100)")
+            .setTitle("Set Speed Limit (From 40 to 100)")
             .setView(dialogView)
             .setPositiveButton("Confirm") { dialog, _ ->
                 val speedLimitText = speedLimitInput.text.toString()
                 if (speedLimitText.isNotEmpty()) {
                     val speedLimit = speedLimitText.toInt()
-                    if (speedLimit in 20..100) {
+                    if (speedLimit in 40..100) {
                         SettingsManager.setSpeedLimit(this, speedLimit)
                         Toast.makeText(this, "Speed limit set to $speedLimit", Toast.LENGTH_SHORT).show()
                     } else {
-                        Toast.makeText(this, "Please enter a valid speed limit between 20 and 100", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this, "Please enter a valid speed limit between 40 and 100", Toast.LENGTH_SHORT).show()
                     }
                 } else {
                     Toast.makeText(this, "Please enter a valid speed limit", Toast.LENGTH_SHORT).show()
@@ -101,13 +100,12 @@ class SettingsActivity : AppCompatActivity() {
         AlertDialog.Builder(this)
             .setTitle("Change Overlay Color")
             .setSingleChoiceItems(colors, checkedItem) { dialog, which ->
-                // Handle color selection
                 val selectedColor = when (which) {
                     0 -> Color.WHITE
                     1 -> Color.BLACK
                     2 -> Color.RED
                     3 -> Color.GREEN
-                    else -> Color.TRANSPARENT // "No Overlay"
+                    else -> Color.TRANSPARENT
                 }
                 SettingsManager.setOverlayColor(this, selectedColor)
                 dialog.dismiss()

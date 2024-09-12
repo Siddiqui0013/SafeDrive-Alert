@@ -46,6 +46,8 @@ import com.siddiqui.safedrivealert.ui.main.DetectionActivityViewModel.InCarState
 import com.siddiqui.safedrivealert.databinding.ActivityDetectionBinding
 import com.siddiqui.safedrivealert.ui.main.DetectionActivityViewModel
 import com.siddiqui.safedrivealert.ui.main.FaceDetectorProcessor
+import com.siddiqui.safedrivealert.ui.main.SettingsManager
+import kotlin.math.abs
 
 class DetectionActivity : AppCompatActivity(), FaceDetectorProcessor.OnFaceDetectListener {
 
@@ -342,6 +344,53 @@ class DetectionActivity : AppCompatActivity(), FaceDetectorProcessor.OnFaceDetec
 
         }
     }
+
+
+//        private fun setupLocationClient() {
+//        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
+//        locationCallback = object : LocationCallback() {
+//            override fun onLocationResult(locationResult: LocationResult) {
+//                for (location in locationResult.locations) {
+//                    val speed = location.speed
+//                    val speedKmH = speed * 3.6
+//                    val speedLimit = 5
+//
+////                    val speedLimit = SettingsManager.getSpeedLimit(this@DetectionActivity)
+//
+//                    val tolerance = 0.1f
+//
+//                    binding.speedTextView.text = getString(R.string.speed_text, speedKmH)
+//
+//                    if (abs(speedKmH - speedLimit) < tolerance ){
+//                        binding.speedTextView.apply {
+//                            setBackgroundResource(R.drawable.circle_red_background)
+//                            setTextColor(ContextCompat.getColor(context,R.color.white))
+//                        }
+//                    }
+//
+//                    if(!safeDriveMediaPlayer.isPlaying){
+//                        safeDriveMediaPlayer.start()
+//                    }
+//                    else {
+//                        binding.speedTextView.apply {
+//                            setBackgroundResource(R.drawable.circle_background)
+//                            setTextColor(ContextCompat.getColor(applicationContext, android.R.color.black))
+//                        }
+//
+//                        if (safeDriveMediaPlayer.isPlaying) {
+//                            safeDriveMediaPlayer.pause()
+//                            safeDriveMediaPlayer.seekTo(0)
+//                        }
+//                    }
+//                }
+//            }
+//        }
+//    }
+
+
+
+
+
 
 
         private fun setupLocationClient() {
